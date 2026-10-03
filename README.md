@@ -55,12 +55,17 @@ pill's right-click menu. Your choice is remembered.
 1. Download the `.dmg` from the
    [latest release](https://github.com/ask0ne/saddle/releases/latest).
 2. Open it and drag **Saddle** to **Applications**.
-3. This beta is **not code-signed or notarized**, so macOS Gatekeeper will
-   block the first launch. Either right-click Saddle → **Open**, or run:
+3. This beta is **not code-signed or notarized**, so macOS will refuse the
+   first launch. Open **System Settings → Privacy & Security**, scroll down to
+   the message about Saddle, and click **Open Anyway**. Alternatively, clear
+   the quarantine flag from a terminal:
 
    ```bash
    xattr -dr com.apple.quarantine /Applications/Saddle.app
    ```
+
+   You can verify the download against `SHA256SUMS.txt` on the release page
+   with `shasum -a 256 -c SHA256SUMS.txt`.
 
 Requires **macOS 13 or later** and **Claude Code**.
 

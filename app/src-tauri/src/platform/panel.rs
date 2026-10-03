@@ -24,6 +24,8 @@
 //! pill window (drag via `data-tauri-drag-region`, transparency, sizing) is
 //! plain Tauri/web, no `unsafe` involved.
 
+#![allow(unsafe_code)] // this module is the app's one FFI boundary; each block has a SAFETY note
+
 use objc2_app_kit::{NSColor, NSWindowCollectionBehavior};
 use objc2_web_kit::WKWebView;
 

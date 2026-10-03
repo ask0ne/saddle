@@ -6,9 +6,26 @@ authors = ["Atharva Kawade"]
 license = "MIT"
 repository = "https://github.com/ask0ne/saddle"
 homepage = "https://github.com/ask0ne/saddle"
+readme = "../../README.md"
 edition = "2024"
+# let-chains (used throughout) stabilised in 1.88; CI builds with exactly this.
+rust-version = "1.88"
+# An application, not a library: never published to crates.io.
+publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lints.rust]
+# The only unsafe code is the NSWindow/WKWebView FFI in platform::panel and one
+# kill(2) probe in fleet::registry; both opt in explicitly with a SAFETY note.
+unsafe_code = "deny"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+dbg_macro = "warn"
+todo = "warn"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
 
 [lib]
 # The `_lib` suffix may seem redundant but it is necessary
