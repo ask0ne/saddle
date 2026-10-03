@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Saddle",
+  "version": "0.1.0",
+  "identifier": "com.whelmedthinker.saddle",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../build"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Saddle",
+        "width": 560,
+        "height": 520,
+        "minWidth": 460,
+        "minHeight": 340,
+        "center": true,
+        "visible": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app",
+      "dmg"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "DeveloperTool",
+    "shortDescription": "See which Claude Code session is waiting for you.",
+    "longDescription": "Saddle is a macOS companion for Claude Code. It shows which of your concurrent sessions is waiting on you and takes you to that exact Terminal tab.",
+    "copyright": "Copyright \u00a9 2026 Atharva Kawade. MIT License.",
+    "resources": {
+      "../../install-hooks.sh": "install-hooks.sh"
+    },
+    "macOS": {
+      "minimumSystemVersion": "13.0"
+    }
+  }
+}

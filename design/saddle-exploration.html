@@ -1,0 +1,1386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saddle — theme exploration</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,500&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&family=Bitter:wght@500;600&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #17140f;
+    --bg-raised: #1e1a13;
+    --panel: #221d15;
+    --line: #3a3122;
+    --line-soft: #2a251b;
+    --tx: #f1ece0;
+    --tx2: #b8ae98;
+    --tx3: #857a63;
+    --tx4: #5c5443;
+    --brass: #b08d57;
+    --brass-dim: rgba(176, 141, 87, 0.15);
+
+    --serif: "Source Serif 4", Georgia, serif;
+    --sans: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--tx);
+    font-family: var(--sans);
+    font-size: 15.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--brass-dim); }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px 140px; }
+
+  /* ---------- masthead ---------- */
+
+  header.mast {
+    padding: 88px 0 56px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: var(--brass);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(40px, 5.2vw, 60px);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+    text-wrap: balance;
+    max-width: 15ch;
+  }
+
+  h1 em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--brass);
+  }
+
+  .lede {
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--tx2);
+    max-width: 62ch;
+    margin: 0 0 28px;
+  }
+
+  .mast-meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--tx3);
+  }
+  .mast-meta b { color: var(--tx2); font-weight: 500; }
+
+  nav.toc {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+  nav.toc a {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--tx3);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 14px;
+  }
+  nav.toc a:hover { color: var(--tx); border-color: var(--brass); }
+
+  /* ---------- sections ---------- */
+
+  section { padding: 76px 0 0; }
+
+  .sec-head { margin-bottom: 36px; }
+  .sec-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--brass);
+    letter-spacing: 0.14em;
+    margin-bottom: 10px;
+    display: block;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+  .sec-dek {
+    color: var(--tx2);
+    font-size: 15.5px;
+    max-width: 66ch;
+    margin: 0;
+  }
+
+  code { font-family: var(--mono); font-size: 0.9em; color: var(--brass); }
+
+  /* ---------- palette cards ---------- */
+
+  .palettes { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 22px; }
+
+  .palette-card {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .palette-swatch { display: flex; height: 96px; }
+  .palette-swatch > div { flex: 1; }
+
+  .palette-body { padding: 22px 24px 24px; }
+
+  .palette-name {
+    font-family: var(--serif);
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .palette-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--tx3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .palette-desc {
+    font-size: 13.5px;
+    color: var(--tx2);
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+
+  .swatch-list { display: flex; flex-direction: column; gap: 8px; }
+  .swatch-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .swatch-dot { width: 13px; height: 13px; border-radius: 4px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.08); }
+  .swatch-role { color: var(--tx2); width: 76px; flex-shrink: 0; }
+  .swatch-hex { color: var(--tx3); }
+
+  /* ---------- icon gallery ---------- */
+
+  .icons { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+
+  .icon-card {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 26px 22px 22px;
+  }
+
+  .icon-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(255,255,255,0.03), transparent 70%),
+      var(--bg-raised);
+    border-radius: 10px;
+    padding: 30px 10px;
+    margin-bottom: 18px;
+  }
+
+  .icon-at-size { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .icon-at-size span { font-family: var(--mono); font-size: 10px; color: var(--tx4); }
+
+  .menubar-demo {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #0c0a07;
+    border-radius: 5px;
+    padding: 4px 9px;
+    border: 1px solid var(--line);
+  }
+  .menubar-demo span {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--tx2);
+  }
+
+  .icon-name { font-family: var(--serif); font-size: 17px; font-weight: 600; margin: 0 0 5px; }
+  .icon-desc { font-size: 13px; color: var(--tx3); line-height: 1.55; margin: 0; }
+
+  /* ---------- final design mockups ---------- */
+
+  .finals { display: flex; flex-direction: column; gap: 56px; }
+
+  .final-block { }
+  .final-label {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .final-title { font-family: var(--serif); font-size: 22px; font-weight: 600; }
+  .final-combo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--tx3);
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+
+  .final-stage {
+    background:
+      radial-gradient(900px 260px at 15% -10%, rgba(176,141,87,0.06), transparent 65%),
+      var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 16px;
+    padding: 36px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  /* ===== rendered saddle UI (real component shapes, themed per palette) ===== */
+  .ui-font { font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif; }
+
+  .pill-demo {
+    width: 236px;
+    height: 34px;
+    border-radius: 17px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  }
+  .pill-count {
+    width: 20px; height: 20px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+  }
+  .pill-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .pill-head { font-size: 12.5px; font-weight: 500; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pill-age { font-family: var(--mono); font-size: 10.5px; opacity: 0.7; }
+
+  .board-demo {
+    width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+  }
+  .board-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 13px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .board-row {
+    display: flex; align-items: center; gap: 9px;
+    padding: 10px 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .board-row:last-child { border-bottom: none; }
+  .board-row-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .board-row-name { font-size: 12.5px; font-weight: 500; flex-grow: 1; }
+  .board-row-status { font-family: var(--mono); font-size: 10.5px; }
+
+  /* ---------- layout section ---------- */
+
+  .layouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
+  .layout-card {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 26px;
+  }
+  .layout-title { font-family: var(--serif); font-size: 19px; font-weight: 600; margin: 0 0 6px; }
+  .layout-desc { font-size: 13.5px; color: var(--tx2); margin: 0 0 22px; line-height: 1.6; }
+  .layout-stage {
+    background: var(--bg-raised);
+    border-radius: 10px;
+    padding: 28px 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .strip-demo {
+    width: 258px;
+    border-radius: 14px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .strip-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 9px;
+    border-radius: 9px;
+  }
+  .strip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .strip-name { font-size: 11.5px; font-weight: 500; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .strip-age { font-family: var(--mono); font-size: 9.5px; opacity: 0.65; }
+
+  /* ---------- note / recommendation ---------- */
+
+  .note {
+    border-left: 2px solid var(--brass);
+    background: var(--brass-dim);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin-top: 20px;
+    max-width: 70ch;
+  }
+  .note b { color: var(--brass); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .note p { margin: 0; font-size: 13.5px; color: var(--tx2); line-height: 1.6; }
+
+  footer {
+    margin-top: 90px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line-soft);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--tx4);
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px 100px; }
+    header.mast { padding: 56px 0 40px; }
+  }
+
+  /* ---------- profile variants ---------- */
+
+  .variants { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+  .variant-card {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 22px 18px 20px;
+    text-align: center;
+  }
+  .variant-stage {
+    background: #1c1710;
+    border-radius: 10px;
+    padding: 26px 10px 20px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .variant-name { font-family: var(--serif); font-size: 15.5px; font-weight: 600; margin: 0 0 4px; }
+  .variant-desc { font-size: 12.5px; color: var(--tx3); line-height: 1.5; margin: 0; }
+
+  /* ---------- app states ---------- */
+
+  .states { display: flex; flex-direction: column; gap: 52px; }
+  .state-block { }
+  .state-label { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+  .state-num { font-family: var(--mono); font-size: 11px; color: var(--brass); }
+  .state-title { font-family: var(--serif); font-size: 20px; font-weight: 600; }
+  .state-when { font-size: 13px; color: var(--tx3); }
+  .state-stage {
+    background:
+      radial-gradient(700px 220px at 20% -10%, rgba(193,88,58,0.05), transparent 65%),
+      var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 16px;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* real macOS-window chrome, for the Board / "boarded" state */
+  .board-window {
+    width: 460px;
+    border-radius: 11px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    background: #201911;
+    border: 1px solid #3a2f1e;
+  }
+  .titlebar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px;
+    background: #241d15;
+    border-bottom: 1px solid #3a2f1e;
+  }
+  .tlight { width: 11px; height: 11px; border-radius: 50%; }
+  .titlebar-name {
+    font-family: "IBM Plex Sans", sans-serif; font-size: 13px; font-weight: 600;
+    color: #e5decc; margin-left: 6px; letter-spacing: -0.01em;
+  }
+  .board-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 13px;
+    border-bottom: 1px solid #2e2617;
+  }
+  .board-tab {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em;
+    padding: 4px 10px; border-radius: 6px; color: #857a63;
+  }
+  .board-tab.active { background: #c1583a22; color: #e39270; }
+  .board-section-label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #857a63; padding: 12px 13px 6px;
+  }
+
+  /* splash */
+  .splash-stage { background: #1c1710; border-radius: 16px; padding: 0; overflow: hidden; }
+  .splash-window {
+    width: 340px; height: 400px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+    background: radial-gradient(500px 400px at 50% 30%, rgba(193,88,58,0.08), transparent 70%), #1c1710;
+  }
+  .splash-mark { opacity: 0.95; }
+  .splash-word { font-family: "IBM Plex Sans", sans-serif; font-size: 27px; font-weight: 700; letter-spacing: -0.01em; color: #f1ece0; }
+  .splash-sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #857a63; }
+  .splash-bar { width: 120px; height: 3px; border-radius: 2px; background: #3a2f1e; overflow: hidden; margin-top: 6px; }
+  .splash-bar > div { width: 55%; height: 100%; background: #c1583a; border-radius: 2px; }
+
+  /* naming table */
+  .naming-table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+  .naming-table th {
+    text-align: left; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--tx3); padding: 0 16px 10px 0; border-bottom: 1px solid var(--line);
+  }
+  .naming-table td {
+    padding: 13px 16px 13px 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; font-size: 13.5px; color: var(--tx2);
+  }
+  .naming-table td:first-child, .naming-table td:nth-child(2) { color: var(--tx); font-weight: 500; }
+  .naming-table .pick { color: var(--brass) !important; }
+
+  /* app <-> pill toggle button — a real control, not a text link */
+  .saddle-toggle {
+    display: flex; align-items: center; justify-content: center;
+    width: 26px; height: 22px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #857a63;
+    cursor: pointer;
+    padding: 0;
+  }
+  .saddle-toggle:hover { background: #2e2617; color: #e5c294; border-color: #3a2f1e; }
+
+  /* ---------- font gallery ---------- */
+
+  .fonts { display: flex; flex-direction: column; gap: 18px; }
+  .font-card {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 26px 28px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 28px;
+    align-items: center;
+  }
+  .font-meta { }
+  .font-name { font-family: var(--serif); font-size: 18px; font-weight: 600; margin: 0 0 6px; color: var(--tx); }
+  .font-roles { font-family: var(--mono); font-size: 11px; color: var(--tx3); line-height: 1.7; }
+  .font-roles b { color: var(--brass); font-weight: 500; }
+  .font-sample { border-left: 1px solid var(--line); padding-left: 26px; }
+  .font-sample .word { font-size: 34px; font-weight: 600; color: #f1ece0; margin-bottom: 6px; line-height: 1.1; }
+  .font-sample .tag { font-size: 13.5px; color: #b8ae98; margin-bottom: 10px; }
+  .font-sample .stat { font-size: 12px; color: #d8a583; }
+  .font-note { font-size: 12.5px; color: var(--tx3); margin: 14px 0 0; grid-column: 1 / -1; padding-top: 14px; border-top: 1px solid var(--line-soft); line-height: 1.55; }
+
+  @media (max-width: 720px) {
+    .font-card { grid-template-columns: 1fr; }
+    .font-sample { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; }
+  }
+
+  /* ---------- app icon gallery ---------- */
+
+  .icongrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+  .icon-big-card {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 24px 20px 20px;
+    text-align: center;
+  }
+  .icon-big-stage {
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px 0 22px;
+  }
+
+  /* macOS-style squircle: border-radius approximates it well enough for review */
+  .app-icon {
+    width: 120px; height: 120px;
+    border-radius: 27px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .app-icon.small { width: 64px; height: 64px; border-radius: 15px; }
+
+  .icon-big-name { font-family: var(--serif); font-size: 16px; font-weight: 600; margin: 4px 0 5px; }
+  .icon-big-desc { font-size: 12.5px; color: var(--tx3); line-height: 1.55; margin: 0; }
+
+  /* dock strip */
+  .dock-strip {
+    display: flex; align-items: flex-end; gap: 14px;
+    background: rgba(30, 24, 16, 0.55);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 10px 18px 8px;
+    backdrop-filter: blur(10px);
+  }
+  .dock-strip .app-icon.small { box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
+  .dock-ghost {
+    width: 64px; height: 64px; border-radius: 15px;
+    background: rgba(255,255,255,0.045);
+    border: 1px dashed rgba(255,255,255,0.08);
+  }
+  .dock-sep { width: 1px; height: 44px; background: rgba(255,255,255,0.09); align-self: center; }
+
+  /* dmg installer window */
+  .dmg-window {
+    width: 460px;
+    border-radius: 11px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    border: 1px solid #3a2f1e;
+  }
+  .dmg-body {
+    height: 260px;
+    display: flex; align-items: center; justify-content: center; gap: 46px;
+    background: radial-gradient(600px 340px at 50% 20%, rgba(193,88,58,0.07), transparent 65%), #1c1710;
+  }
+  .dmg-arrow { color: #5c5443; }
+  .dmg-label { font-family: "IBM Plex Sans", sans-serif; font-size: 11px; font-weight: 500; color: #b8ae98; margin-top: 10px; text-align: center; }
+  .dmg-folder { width: 84px; height: 84px; display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <span class="eyebrow">devpit → rename exploration</span>
+    <h1>Saddle. <em>Saddle up your fleet.</em></h1>
+    <p class="lede">A theme exploration for the rename — not a recolor of devpit's existing amber/teal, but a real reconsideration of what "Saddle" wants to look like. The name earns a direction: you don't run one Claude Code session, you saddle up a fleet of them.</p>
+    <div class="mast-meta">
+      <span><b>3</b> palettes</span>
+      <span><b>4</b> icon concepts</span>
+      <span><b>4</b> combined mockups</span>
+      <span><b>2</b> layouts</span>
+      <span style="color:#e8a33d;">→ chosen: Profile · Tack · collapsible</span>
+    </div>
+    <nav class="toc">
+      <a href="#palettes">Palettes</a>
+      <a href="#icons">Icons</a>
+      <a href="#finals">Full designs</a>
+      <a href="#layouts">Layouts</a>
+      <a href="#profile-variants">Profile, five ways</a>
+      <a href="#states">App states</a>
+      <a href="#naming">Naming the modes</a>
+      <a href="#fonts">Fonts</a>
+      <a href="#app-icon">App icon</a>
+    </nav>
+  </header>
+
+  <!-- ============ PALETTES ============ -->
+  <section id="palettes">
+    <div class="sec-head">
+      <span class="sec-num">01 — PALETTE</span>
+      <h2>Three directions, not three shades</h2>
+      <p class="sec-dek">Each commits to a different reading of "saddle" — literal craft, modern workwear, or the name with no visual costume at all. Pick the world before picking the exact hex.</p>
+    </div>
+
+    <div class="palettes">
+
+      <div class="palette-card">
+        <div class="palette-swatch">
+          <div style="background:#1c1710"></div>
+          <div style="background:#c1583a"></div>
+          <div style="background:#c89b3c"></div>
+          <div style="background:#6b7a4f"></div>
+        </div>
+        <div class="palette-body">
+          <span class="palette-tag">Literal craft</span>
+          <h3 class="palette-name">Tack</h3>
+          <p class="palette-desc">Saddle leather and brass hardware, taken straight. Warm umber ground, a burnt-sienna "needs you" like tooled-leather stain, brass-gold for working, sage-olive for done — the most costumed of the three, and the most immediately "on brand" for the name.</p>
+          <div class="swatch-list">
+            <div class="swatch-row"><span class="swatch-dot" style="background:#1c1710"></span><span class="swatch-role">ground</span><span class="swatch-hex">#1c1710</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#c1583a"></span><span class="swatch-role">waiting</span><span class="swatch-hex">#c1583a</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#c89b3c"></span><span class="swatch-role">working</span><span class="swatch-hex">#c89b3c</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#6b7a4f"></span><span class="swatch-role">done</span><span class="swatch-hex">#6b7a4f</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="palette-card">
+        <div class="palette-swatch">
+          <div style="background:#17181b"></div>
+          <div style="background:#c24e4e"></div>
+          <div style="background:#4e7c8c"></div>
+          <div style="background:#a68a5b"></div>
+        </div>
+        <div class="palette-body">
+          <span class="palette-tag">Modern workwear</span>
+          <h3 class="palette-name">Corral</h3>
+          <p class="palette-desc">Rope, canvas, denim — ranch-adjacent without being a leather museum. Cool-neutral ground (the one departure from warm-brown), faded barn-red for waiting, chambray blue for working, rope-tan for done. Reads as considered, not costumed.</p>
+          <div class="swatch-list">
+            <div class="swatch-row"><span class="swatch-dot" style="background:#17181b"></span><span class="swatch-role">ground</span><span class="swatch-hex">#17181b</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#c24e4e"></span><span class="swatch-role">waiting</span><span class="swatch-hex">#c24e4e</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#4e7c8c"></span><span class="swatch-role">working</span><span class="swatch-hex">#4e7c8c</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#a68a5b"></span><span class="swatch-role">done</span><span class="swatch-hex">#a68a5b</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="palette-card">
+        <div class="palette-swatch">
+          <div style="background:#121212"></div>
+          <div style="background:#e8a33d"></div>
+          <div style="background:#7c5cbf"></div>
+          <div style="background:#7c8b6e"></div>
+        </div>
+        <div class="palette-body">
+          <span class="palette-tag">Abstract continuity</span>
+          <h3 class="palette-name">Brand</h3>
+          <p class="palette-desc">The name without the costume. True-neutral black, a refined amber (kin to devpit's original — the "needs you" signal is muscle memory now) paired with plum instead of teal. No leather iconography anywhere; the color system alone carries the identity.</p>
+          <div class="swatch-list">
+            <div class="swatch-row"><span class="swatch-dot" style="background:#121212"></span><span class="swatch-role">ground</span><span class="swatch-hex">#121212</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#e8a33d"></span><span class="swatch-role">waiting</span><span class="swatch-hex">#e8a33d</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#7c5cbf"></span><span class="swatch-role">working</span><span class="swatch-hex">#7c5cbf</span></div>
+            <div class="swatch-row"><span class="swatch-dot" style="background:#7c8b6e"></span><span class="swatch-role">done</span><span class="swatch-hex">#7c8b6e</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <b>a note on "done"</b>
+      <p>All three keep the shipped app's actual bug fix in mind — "done" needs its own color, not a fallback to idle's grey (that was a real defect fixed in the last round). Every palette above budgets a fourth, quieter hue for it on purpose.</p>
+    </div>
+  </section>
+
+  <!-- ============ ICONS ============ -->
+  <section id="icons">
+    <div class="sec-head">
+      <span class="sec-num">02 — MARK</span>
+      <h2>Four marks, menubar-scale first</h2>
+      <p class="sec-dek">Judged at 16–18px before anything else — that's the size it actually lives at, all day, next to the clock. Shown here in Brand's amber on dark; the shape is the point, not this particular color.</p>
+    </div>
+
+    <div class="icons">
+
+      <div class="icon-card">
+        <div class="icon-stage">
+          <div class="icon-at-size">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#e8a33d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>18px</span>
+          </div>
+          <div class="icon-at-size">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#e8a33d" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>32px</span>
+          </div>
+          <div class="menubar-demo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#e8a33d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>2 · Tue 14:32</span>
+          </div>
+        </div>
+        <h3 class="icon-name">Profile</h3>
+        <p class="icon-desc">A saddle's silhouette, reduced to the seat curve and cantle in one continuous stroke. Most literal of the four — reads as "saddle" immediately, at the cost of being the most ordinary shape.</p>
+      </div>
+
+      <div class="icon-card">
+        <div class="icon-stage">
+          <div class="icon-at-size">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M7 4v6.5a5 5 0 0 0 5 5 5 5 0 0 0 5-5V4" stroke="#e8a33d" stroke-width="2.3" stroke-linecap="round"/><path d="M9.5 15.5v3a2.5 2.5 0 0 0 5 0v-3" stroke="#e8a33d" stroke-width="2.3" stroke-linecap="round"/></svg>
+            <span>18px</span>
+          </div>
+          <div class="icon-at-size">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M7 4v6.5a5 5 0 0 0 5 5 5 5 0 0 0 5-5V4" stroke="#e8a33d" stroke-width="1.8" stroke-linecap="round"/><path d="M9.5 15.5v3a2.5 2.5 0 0 0 5 0v-3" stroke="#e8a33d" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span>32px</span>
+          </div>
+          <div class="menubar-demo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 4v6.5a5 5 0 0 0 5 5 5 5 0 0 0 5-5V4" stroke="#e8a33d" stroke-width="2.6" stroke-linecap="round"/><path d="M9.5 15.5v3a2.5 2.5 0 0 0 5 0v-3" stroke="#e8a33d" stroke-width="2.6" stroke-linecap="round"/></svg>
+            <span>2 · Tue 14:32</span>
+          </div>
+        </div>
+        <h3 class="icon-name">Stirrup</h3>
+        <p class="icon-desc">An arch you step into, abstracted from a stirrup's shape. Doubles as a "connection / portal" mark without anyone needing to know the reference — the most app-icon-native of the four, cleanest at tiny sizes.</p>
+      </div>
+
+      <div class="icon-card">
+        <div class="icon-stage">
+          <div class="icon-at-size">
+            <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#e8a33d" stroke-width="1.6"/><path d="M9 8.5c0-1 1-1.6 2.4-1.6 1.6 0 2.6.8 2.6 1.9 0 2.4-5 1.7-5 4.4 0 1.2 1.1 2.1 2.7 2.1 1.5 0 2.6-.7 2.7-1.8" stroke="#e8a33d" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+            <span>18px</span>
+          </div>
+          <div class="icon-at-size">
+            <svg width="32" height="32" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#e8a33d" stroke-width="1.3"/><path d="M9 8.5c0-1 1-1.6 2.4-1.6 1.6 0 2.6.8 2.6 1.9 0 2.4-5 1.7-5 4.4 0 1.2 1.1 2.1 2.7 2.1 1.5 0 2.6-.7 2.7-1.8" stroke="#e8a33d" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>
+            <span>32px</span>
+          </div>
+          <div class="menubar-demo">
+            <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#e8a33d" stroke-width="2"/><path d="M9 8.5c0-1 1-1.6 2.4-1.6 1.6 0 2.6.8 2.6 1.9 0 2.4-5 1.7-5 4.4 0 1.2 1.1 2.1 2.7 2.1 1.5 0 2.6-.7 2.7-1.8" stroke="#e8a33d" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            <span>2 · Tue 14:32</span>
+          </div>
+        </div>
+        <h3 class="icon-name">Stamp</h3>
+        <p class="icon-desc">A tooling-iron mark: circle plus a monogram "S". The most "brand," least "app icon" of the set — reads well as a logo on a landing page or .dmg background, slightly busy at 18px next to a system clock.</p>
+      </div>
+
+      <div class="icon-card">
+        <div class="icon-stage">
+          <div class="icon-at-size">
+            <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="4" cy="16" r="1.6" fill="#e8a33d"/><circle cx="9" cy="12.5" r="1.6" fill="#e8a33d"/><circle cx="14" cy="10.5" r="1.6" fill="#e8a33d"/><circle cx="19.5" cy="10" r="1.9" fill="#e8a33d"/></svg>
+            <span>18px</span>
+          </div>
+          <div class="icon-at-size">
+            <svg width="32" height="32" viewBox="0 0 24 24"><circle cx="4" cy="16" r="1.6" fill="#e8a33d"/><circle cx="9" cy="12.5" r="1.6" fill="#e8a33d"/><circle cx="14" cy="10.5" r="1.6" fill="#e8a33d"/><circle cx="19.5" cy="10" r="1.9" fill="#e8a33d"/></svg>
+            <span>32px</span>
+          </div>
+          <div class="menubar-demo">
+            <svg width="14" height="14" viewBox="0 0 24 24"><circle cx="4" cy="16" r="1.6" fill="#e8a33d"/><circle cx="9" cy="12.5" r="1.6" fill="#e8a33d"/><circle cx="14" cy="10.5" r="1.6" fill="#e8a33d"/><circle cx="19.5" cy="10" r="1.9" fill="#e8a33d"/></svg>
+            <span>2 · Tue 14:32</span>
+          </div>
+        </div>
+        <h3 class="icon-name">Fleet</h3>
+        <p class="icon-desc">No saddle iconography at all — a rising arc of dots, the fleet itself, the last (brightest) one standing in for "the one that needs you." Continues devpit's existing abstract mark language rather than replacing it; safest choice if the rename shouldn't reset brand memory.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ FINAL DESIGNS ============ -->
+  <section id="finals">
+    <div class="sec-head">
+      <span class="sec-num">03 — SYNTHESIS</span>
+      <h2>Four combined directions</h2>
+      <p class="sec-dek">Palette and mark paired against the real pill + board shapes — not abstract swatches, the actual UI. Two are the "obvious" pairings (Tack+Stamp, Corral+Stirrup); two cross-pollinate deliberately, since palette and mark are genuinely separable decisions.</p>
+    </div>
+
+    <div class="finals">
+
+      <!-- FINAL 1: Tack + Stamp -->
+      <div class="final-block">
+        <div class="final-label">
+          <span class="final-title">Tack, in full</span>
+          <span class="final-combo">Tack palette · Stamp mark</span>
+        </div>
+        <div class="final-stage">
+          <div class="ui-font pill-demo" style="background:#241d15; border:1px solid #3a2f1e;">
+            <span class="pill-count" style="background:#c1583a; color:#1c1710;">2</span>
+            <span class="pill-dot" style="background:#c1583a; box-shadow:0 0 0 3px rgba(193,88,58,0.22);"></span>
+            <span class="pill-head" style="color:#f1ece0;">qna-main-service</span>
+            <span class="pill-age" style="color:#d8a583;">2m</span>
+          </div>
+          <div class="ui-font board-demo" style="background:#211a13; border:1px solid #3a2f1e;">
+            <div class="board-head" style="color:#c1583a;">Needs you</div>
+            <div class="board-row" style="background:linear-gradient(180deg, rgba(193,88,58,0.09), transparent);">
+              <span class="board-row-dot" style="background:#c1583a;"></span>
+              <span class="board-row-name" style="color:#f1ece0;">qna-main-service</span>
+              <span class="board-row-status" style="color:#d8a583;">2m</span>
+            </div>
+            <div class="board-row">
+              <span class="board-row-dot" style="background:#c89b3c;"></span>
+              <span class="board-row-name" style="color:#e5decc;">notification-engine</span>
+              <span class="board-row-status" style="color:#c89b3c;">Bash · 14s</span>
+            </div>
+            <div class="board-row">
+              <span class="board-row-dot" style="background:#6b7a4f;"></span>
+              <span class="board-row-name" style="color:#c7bfa9;">seetail</span>
+              <span class="board-row-status" style="color:#8b9a75;">done · 1m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL 2: Corral + Stirrup -->
+      <div class="final-block">
+        <div class="final-label">
+          <span class="final-title">Corral, in full</span>
+          <span class="final-combo">Corral palette · Stirrup mark</span>
+        </div>
+        <div class="final-stage">
+          <div class="ui-font pill-demo" style="background:#1e2024; border:1px solid #33363c;">
+            <span class="pill-count" style="background:#c24e4e; color:#0f1012;">2</span>
+            <span class="pill-dot" style="background:#c24e4e; box-shadow:0 0 0 3px rgba(194,78,78,0.22);"></span>
+            <span class="pill-head" style="color:#eceef0;">qna-main-service</span>
+            <span class="pill-age" style="color:#d99b9b;">2m</span>
+          </div>
+          <div class="ui-font board-demo" style="background:#1c1e22; border:1px solid #33363c;">
+            <div class="board-head" style="color:#c24e4e;">Needs you</div>
+            <div class="board-row" style="background:linear-gradient(180deg, rgba(194,78,78,0.09), transparent);">
+              <span class="board-row-dot" style="background:#c24e4e;"></span>
+              <span class="board-row-name" style="color:#eceef0;">qna-main-service</span>
+              <span class="board-row-status" style="color:#d99b9b;">2m</span>
+            </div>
+            <div class="board-row">
+              <span class="board-row-dot" style="background:#4e7c8c;"></span>
+              <span class="board-row-name" style="color:#c9cdd2;">notification-engine</span>
+              <span class="board-row-status" style="color:#7fadbd;">Bash · 14s</span>
+            </div>
+            <div class="board-row">
+              <span class="board-row-dot" style="background:#a68a5b;"></span>
+              <span class="board-row-name" style="color:#aeb2b8;">seetail</span>
+              <span class="board-row-status" style="color:#c0a878;">done · 1m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL 3: Brand + Fleet -->
+      <div class="final-block">
+        <div class="final-label">
+          <span class="final-title">Brand, in full</span>
+          <span class="final-combo">Brand palette · Fleet mark</span>
+        </div>
+        <div class="final-stage">
+          <div class="ui-font pill-demo" style="background:#1a1a1a; border:1px solid #2c2c2c;">
+            <span class="pill-count" style="background:#e8a33d; color:#1a1200;">2</span>
+            <span class="pill-dot" style="background:#e8a33d; box-shadow:0 0 0 3px rgba(232,163,61,0.22);"></span>
+            <span class="pill-head" style="color:#f2f0eb;">qna-main-service</span>
+            <span class="pill-age" style="color:#e6c288;">2m</span>
+          </div>
+          <div class="ui-font board-demo" style="background:#191919; border:1px solid #2c2c2c;">
+            <div class="board-head" style="color:#e8a33d;">Needs you</div>
+            <div class="board-row" style="background:linear-gradient(180deg, rgba(232,163,61,0.08), transparent);">
+              <span class="board-row-dot" style="background:#e8a33d;"></span>
+              <span class="board-row-name" style="color:#f2f0eb;">qna-main-service</span>
+              <span class="board-row-status" style="color:#e6c288;">2m</span>
+            </div>
+            <div class="board-row">
+              <span class="board-row-dot" style="background:#7c5cbf;"></span>
+              <span class="board-row-name" style="color:#cfcdc9;">notification-engine</span>
+              <span class="board-row-status" style="color:#a68fd6;">Bash · 14s</span>
+            </div>
+            <div class="board-row">
+              <span class="board-row-dot" style="background:#7c8b6e;"></span>
+              <span class="board-row-name" style="color:#b3b1ac;">seetail</span>
+              <span class="board-row-status" style="color:#9aa88c;">done · 1m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL 4: Tack palette + Fleet mark (cross-pollinated) -->
+      <div class="final-block">
+        <div class="final-label">
+          <span class="final-title">Tack, understated</span>
+          <span class="final-combo">Tack palette · Fleet mark</span>
+        </div>
+        <div class="final-stage">
+          <div class="ui-font pill-demo" style="background:#241d15; border:1px solid #3a2f1e;">
+            <span class="pill-count" style="background:#c1583a; color:#1c1710;">2</span>
+            <span class="pill-dot" style="background:#c1583a; box-shadow:0 0 0 3px rgba(193,88,58,0.22);"></span>
+            <span class="pill-head" style="color:#f1ece0;">qna-main-service</span>
+            <span class="pill-age" style="color:#d8a583;">2m</span>
+          </div>
+          <svg width="80" height="34" viewBox="0 0 24 24" style="align-self:center;"><circle cx="4" cy="16" r="1.6" fill="#5c5443"/><circle cx="9" cy="12.5" r="1.6" fill="#857a63"/><circle cx="14" cy="10.5" r="1.6" fill="#c89b3c"/><circle cx="19.5" cy="10" r="1.9" fill="#c1583a"/></svg>
+        </div>
+        <p class="icon-desc" style="margin-top:14px;">The literal-craft palette, carried by the most abstract mark — leather colors without a leather logo. Worth seeing because palette and mark don't have to agree in literalness; this is the "warm but not costumed" middle ground.</p>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <b>a lean, not a lock-in</b>
+      <p>If forced to pick one today: <b style="color:#f1ece0;">Corral + Stirrup</b>. It's the direction least likely to read as "AI picked the on-the-nose leather theme," ages best as an actual macOS menubar icon, and the workwear palette still earns the name without playing dress-up.</p>
+    </div>
+  </section>
+
+  <!-- ============ LAYOUTS ============ -->
+  <section id="layouts">
+    <div class="sec-head">
+      <span class="sec-num">04 — LAYOUT</span>
+      <h2>Two shapes for the pill, for the record</h2>
+      <p class="sec-dek">Structural, not cosmetic — shown in Brand's palette to isolate the one variable. Marked "unlikely to change" going in, so this is here for completeness, not because either is expected to win over what's already shipped.</p>
+    </div>
+
+    <div class="layouts">
+
+      <div class="layout-card">
+        <h3 class="layout-title">A — Collapse to one line</h3>
+        <p class="layout-desc">What's shipped today: a single-line capsule when idle, click to expand into the full list. Minimum footprint at rest; one click for detail.</p>
+        <div class="layout-stage">
+          <div class="ui-font pill-demo" style="background:#1a1a1a; border:1px solid #2c2c2c;">
+            <span class="pill-count" style="background:#e8a33d; color:#1a1200;">2</span>
+            <span class="pill-dot" style="background:#e8a33d; box-shadow:0 0 0 3px rgba(232,163,61,0.22);"></span>
+            <span class="pill-head" style="color:#f2f0eb;">qna-main-service</span>
+            <span class="pill-age" style="color:#e6c288;">2m</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="layout-card">
+        <h3 class="layout-title">B — Always a mini strip</h3>
+        <p class="layout-desc">Skip the click: the top 2–3 sessions stay visible at all times as a short stacked strip, sorted the same way the board is. Richer at rest, taller footprint on screen permanently — the real trade being judged.</p>
+        <div class="layout-stage">
+          <div class="ui-font strip-demo" style="background:#1a1a1a; border:1px solid #2c2c2c;">
+            <div class="strip-row" style="background:rgba(232,163,61,0.1);">
+              <span class="strip-dot" style="background:#e8a33d;"></span>
+              <span class="strip-name" style="color:#f2f0eb;">qna-main-service</span>
+              <span class="strip-age" style="color:#e6c288;">2m</span>
+            </div>
+            <div class="strip-row">
+              <span class="strip-dot" style="background:#7c5cbf;"></span>
+              <span class="strip-name" style="color:#cfcdc9;">notification-engine</span>
+              <span class="strip-age" style="color:#a68fd6;">Bash</span>
+            </div>
+            <div class="strip-row">
+              <span class="strip-dot" style="background:#7c8b6e;"></span>
+              <span class="strip-name" style="color:#b3b1ac;">seetail</span>
+              <span class="strip-age" style="color:#9aa88c;">done</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ============ PROFILE VARIANTS ============ -->
+  <section id="profile-variants">
+    <div class="sec-head">
+      <span class="sec-num">05 — REFINED MARK</span>
+      <h2>Profile, five ways</h2>
+      <p class="sec-dek">The chosen mark, pushed through five renderings before picking a final weight — all in Tack, all shown at 32px, since a single stroke-width choice looks very different once it's actually next to the saddle-brown ground it'll live on.</p>
+    </div>
+
+    <div class="variants">
+
+      <div class="variant-card">
+        <div class="variant-stage">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c1583a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h4 class="variant-name">Line</h4>
+        <p class="variant-desc">The original single-stroke path. Elegant, a little thin once it's small and alone in a busy menubar.</p>
+      </div>
+
+      <div class="variant-card">
+        <div class="variant-stage">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c1583a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h4 class="variant-name">Bold</h4>
+        <p class="variant-desc">Same path, heavier stroke. Holds up at 18px against a cluttered system menubar far better than Line does.</p>
+      </div>
+
+      <div class="variant-card">
+        <div class="variant-stage">
+          <svg width="32" height="32" viewBox="0 0 24 24"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19V21c1.5-1.5 3-2.5 6-3.2 3.2-.7 5-2.7 4.3-6.1C22.6 8 20.5 6.2 17 6c-4.5-.3-9 3.7-11.5 8.5C4.7 15.8 4 16.8 3 16z" fill="#c1583a"/></svg>
+        </div>
+        <h4 class="variant-name">Solid</h4>
+        <p class="variant-desc">Filled silhouette, no stroke at all. Reads as a confident, weighty mark even at 16px — closest to a real saddle-leather brand mark, at the cost of losing the "sketched" quality Line has.</p>
+      </div>
+
+      <div class="variant-card">
+        <div class="variant-stage">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c1583a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 12c1.2-.4 2.6-.4 4 0" stroke="#c89b3c" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <h4 class="variant-name">Stitched</h4>
+        <p class="variant-desc">Line, plus a second brass stroke standing in for saddle-stitching across the seat. Two-color, most literal-craft of the five — needs a light background or dark menubar to actually read as two colors, not one blur.</p>
+      </div>
+
+      <div class="variant-card">
+        <div class="variant-stage">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c1583a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10.5" fill="none" stroke="#3a2f1e" stroke-width="1"/></svg>
+        </div>
+        <h4 class="variant-name">Ringed</h4>
+        <p class="variant-desc">Line inside a faint containing circle — the "badge" read of Stamp, without the monogram. A middle ground if Profile alone feels too loose as a standalone app-icon shape.</p>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <b>decided</b>
+      <p><b style="color:#f1ece0;">Bold</b>, everywhere — menubar icon, splash, .dmg background, app icon. One weight, one mark, fully iconic rather than split across contexts.</p>
+    </div>
+  </section>
+
+  <!-- ============ APP STATES ============ -->
+  <section id="states">
+    <div class="sec-head">
+      <span class="sec-num">06 — SURFACES</span>
+      <h2>Every state, in Tack</h2>
+      <p class="sec-dek">The four moments the app is actually seen: the pill at rest, the pill opened, the full window, and the one-time cold-start moment before any of that exists yet.</p>
+    </div>
+
+    <div class="states">
+
+      <div class="state-block">
+        <div class="state-label">
+          <span class="state-num">6.1</span>
+          <span class="state-title">Pill — collapsed</span>
+          <span class="state-when">— the resting state, all day</span>
+        </div>
+        <div class="state-stage">
+          <div class="ui-font pill-demo" style="background:#241d15; border:1px solid #3a2f1e;">
+            <span class="pill-count" style="background:#c1583a; color:#1c1710;">2</span>
+            <span class="pill-dot" style="background:#c1583a; box-shadow:0 0 0 3px rgba(193,88,58,0.22);"></span>
+            <span class="pill-head" style="color:#f1ece0;">qna-main-service</span>
+            <span class="pill-age" style="color:#d8a583;">2m</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-block">
+        <div class="state-label">
+          <span class="state-num">6.2</span>
+          <span class="state-title">Pill — expanded</span>
+          <span class="state-when">— click the collapsed pill; still a floating, borderless window</span>
+        </div>
+        <div class="state-stage">
+          <div class="ui-font" style="width:252px; border-radius:17px 17px 12px 12px; overflow:hidden; box-shadow:0 18px 44px rgba(0,0,0,0.45); border:1px solid #3a2f1e;">
+            <div style="display:flex; align-items:center; gap:8px; padding:0 12px; height:34px; background:#241d15;">
+              <span class="pill-count" style="background:#c1583a; color:#1c1710;">2</span>
+              <span class="pill-dot" style="background:#c1583a;"></span>
+              <span class="pill-head" style="color:#f1ece0;">needs you</span>
+            </div>
+            <div style="background:#1f1911;">
+              <div class="board-row" style="border-bottom-color:#2e2617;">
+                <span class="board-row-dot" style="background:#c1583a;"></span>
+                <span class="board-row-name" style="color:#f1ece0;">qna-main-service</span>
+                <span class="board-row-status" style="color:#d8a583;">2m</span>
+              </div>
+              <div class="board-row" style="border-bottom-color:#2e2617;">
+                <span class="board-row-dot" style="background:#c89b3c;"></span>
+                <span class="board-row-name" style="color:#e5decc;">notification-engine</span>
+                <span class="board-row-status" style="color:#c89b3c;">Bash</span>
+              </div>
+              <div class="board-row" style="border-bottom:none;">
+                <span class="board-row-dot" style="background:#6b7a4f;"></span>
+                <span class="board-row-name" style="color:#c7bfa9;">seetail</span>
+                <span class="board-row-status" style="color:#8b9a75;">done</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-block">
+        <div class="state-label">
+          <span class="state-num">6.3</span>
+          <span class="state-title">The full window</span>
+          <span class="state-when">— a real, Dock-visible window; needs a name (see below)</span>
+        </div>
+        <div class="state-stage">
+          <div class="ui-font board-window">
+            <div class="titlebar">
+              <span class="tlight" style="background:#c1583a;"></span>
+              <span class="tlight" style="background:#c89b3c;"></span>
+              <span class="tlight" style="background:#6b7a4f;"></span>
+              <span class="titlebar-name">saddle</span>
+              <span style="flex-grow:1;"></span>
+              <button class="saddle-toggle" title="switch to the pill" aria-label="switch to the pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="3" y="8" width="18" height="8" rx="4" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="12" r="1.4" fill="currentColor"/></svg>
+              </button>
+            </div>
+            <div class="board-toolbar">
+              <span class="board-tab active">stable</span>
+              <span class="board-tab">hooves</span>
+              <span class="board-tab">papers</span>
+            </div>
+            <div class="board-section-label" style="color:#c1583a;">needs you</div>
+            <div class="board-row" style="background:linear-gradient(180deg, rgba(193,88,58,0.08), transparent); border-bottom-color:#2e2617;">
+              <span class="board-row-dot" style="background:#c1583a;"></span>
+              <span class="board-row-name" style="color:#f1ece0;">qna-main-service</span>
+              <span class="board-row-status" style="color:#d8a583;">feat/otp-retry · 2m</span>
+            </div>
+            <div class="board-section-label">working</div>
+            <div class="board-row" style="border-bottom-color:#2e2617;">
+              <span class="board-row-dot" style="background:#c89b3c;"></span>
+              <span class="board-row-name" style="color:#e5decc;">notification-engine</span>
+              <span class="board-row-status" style="color:#c89b3c;">bash · 14s</span>
+            </div>
+            <div class="board-section-label">done</div>
+            <div class="board-row" style="border-bottom:none;">
+              <span class="board-row-dot" style="background:#6b7a4f;"></span>
+              <span class="board-row-name" style="color:#c7bfa9;">seetail</span>
+              <span class="board-row-status" style="color:#8b9a75;">1m</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="state-block">
+        <div class="state-label">
+          <span class="state-num">6.4</span>
+          <span class="state-title">Splash</span>
+          <span class="state-when">— cold start only, on screen for under a second</span>
+        </div>
+        <div class="state-stage splash-stage">
+          <div class="splash-window">
+            <svg class="splash-mark" width="52" height="52" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c1583a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="splash-word">saddle</div>
+            <div class="splash-sub">just another ai tool</div>
+            <div class="splash-bar"><div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ NAMING ============ -->
+  <section id="naming">
+    <div class="sec-head">
+      <span class="sec-num">07 — LANGUAGE</span>
+      <h2>Naming the two modes</h2>
+      <p class="sec-dek"><b style="color:#e8a33d;">Confirmed: saddle (pill) → stable (window).</b> "Boarded" and "take off" worked as placeholders but mixed metaphors — boarding is nautical/aviation, saddle is equestrian. Two alternates kept below for the record, in case either tab or copy voice ever wants a different register.</p>
+    </div>
+
+    <div class="tw" style="overflow-x:auto;">
+    <table class="naming-table">
+      <tr><th>Pill state</th><th>Full window</th><th>Reasoning</th></tr>
+      <tr>
+        <td class="pick">saddle ✓</td>
+        <td class="pick">stable ✓</td>
+        <td>Confirmed. Saddle = tacked up and riding light, exactly what the pill is. Stable = where you go to see the whole herd at once, at rest. Verb/noun pair, both one word, both instantly readable without the metaphor needing to be explained.</td>
+      </tr>
+      <tr>
+        <td>Riding</td>
+        <td>Barn</td>
+        <td>Slightly more casual register than Saddled/Stable — "Riding" reads a touch more active/continuous, "Barn" a touch warmer than "Stable." Same pairing logic, different tone.</td>
+      </tr>
+      <tr>
+        <td>Mounted</td>
+        <td>Paddock</td>
+        <td>"Mounted" is the most literal opposite of "dismounted" — technically precise, reads slightly more formal/technical than the other two options. "Paddock" (an open pen you survey the herd from) over "Corral," since Corral is already a palette name in this doc and reusing it for a mode would overload the word.</td>
+      </tr>
+    </table>
+    </div>
+
+    <div class="note">
+      <b>in code, already</b>
+      <p>The Rust commands are already named <code>enter_pill_mode</code> / <code>enter_app_mode</code> — cheap to rename to <code>enter_saddle_mode</code> / <code>enter_stable_mode</code> so the code reads the same way the product talks about itself.</p>
+    </div>
+
+    <div class="note">
+      <b>the three tabs</b>
+      <p><b style="color:#f1ece0;">stable</b> (default — the fleet, at rest or not) and <b style="color:#f1ece0;">hooves</b> (settings — what a horse stands on and gets shod with; toggling models/tools is exactly that kind of maintenance) were both already named. For the about/profile section: <b style="color:#e8a33d;">papers</b> — a horse's papers are its registration and pedigree, the literal "who made this, what version, whose it is" document. One word, stays inside the metaphor, and doesn't double-book a word already spent elsewhere in this doc (unlike <code>brand</code>, which is already a palette name, or <code>tack</code>, already the chosen palette). Alternate if papers reads too formal: <code>groom</code> (the person who cares for the horse — closer to "the person behind this" than "the document about it").</p>
+    </div>
+  </section>
+
+
+  <!-- ============ FONTS ============ -->
+  <section id="fonts">
+    <div class="sec-head">
+      <span class="sec-num">08 — TYPE</span>
+      <h2>Five pairings</h2>
+      <p class="sec-dek">Each rendered in its own faces — the wordmark, the tagline, and a status line with real tabular digits (this app lives or dies on whether "2m" and "14s" line up cleanly in a list). Judge in context, not by name.</p>
+    </div>
+
+    <div class="fonts">
+
+      <div class="font-card">
+        <div class="font-meta">
+          <h4 class="font-name">System</h4>
+          <div class="font-roles"><b>display</b> SF Pro Display<br><b>body</b> SF Pro Text<br><b>mono</b> SF Mono</div>
+        </div>
+        <div class="font-sample" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+          <div class="word">saddle</div>
+          <div class="tag">just another ai tool</div>
+          <div class="stat" style="font-family: ui-monospace, 'SF Mono', monospace; font-variant-numeric: tabular-nums;">qna-main-service · 2m &nbsp;&nbsp; notification-engine · 14s</div>
+        </div>
+        <p class="font-note">Zero web-font risk, zero load time, most "at home" on macOS of the five — the OS's own voice, not a chosen one. Safest option; also the one most likely to feel invisible rather than iconic.</p>
+      </div>
+
+      <div class="font-card">
+        <div class="font-meta">
+          <h4 class="font-name">Plex</h4>
+          <div class="font-roles"><b>display</b> IBM Plex Sans<br><b>body</b> IBM Plex Sans<br><b>mono</b> IBM Plex Mono</div>
+        </div>
+        <div class="font-sample" style="font-family: 'IBM Plex Sans', sans-serif;">
+          <div class="word">saddle</div>
+          <div class="tag">just another ai tool</div>
+          <div class="stat" style="font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums;">qna-main-service · 2m &nbsp;&nbsp; notification-engine · 14s</div>
+        </div>
+        <p class="font-note">Geometric but warm, technical without being cold. Already used elsewhere in this project's design material — picking it here means the app and its documentation share one voice, which is a real point in its favor, not just familiarity.</p>
+      </div>
+
+      <div class="font-card">
+        <div class="font-meta">
+          <h4 class="font-name">Instrument</h4>
+          <div class="font-roles"><b>display</b> Instrument Sans<br><b>body</b> Instrument Sans<br><b>mono</b> JetBrains Mono</div>
+        </div>
+        <div class="font-sample" style="font-family: 'Instrument Sans', sans-serif;">
+          <div class="word">saddle</div>
+          <div class="tag">just another ai tool</div>
+          <div class="stat" style="font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums;">qna-main-service · 2m &nbsp;&nbsp; notification-engine · 14s</div>
+        </div>
+        <p class="font-note">Current without chasing a trend, good x-height at small UI sizes (rows, status labels), a touch more personality in the lowercase "a" and "g" than System without being showy about it.</p>
+      </div>
+
+      <div class="font-card">
+        <div class="font-meta">
+          <h4 class="font-name">Schibsted</h4>
+          <div class="font-roles"><b>display</b> Schibsted Grotesk<br><b>body</b> Schibsted Grotesk<br><b>mono</b> Space Mono</div>
+        </div>
+        <div class="font-sample" style="font-family: 'Schibsted Grotesk', sans-serif;">
+          <div class="word">saddle</div>
+          <div class="tag">just another ai tool</div>
+          <div class="stat" style="font-family: 'Space Mono', monospace; font-variant-numeric: tabular-nums;">qna-main-service · 2m &nbsp;&nbsp; notification-engine · 14s</div>
+        </div>
+        <p class="font-note">The most "designed" of the five — real character in the terminals and the lowercase "a," rare enough that it doesn't yet read as "the safe AI-generated choice" the way Inter or Space Grotesk now do. Most distinctive, most opinionated.</p>
+      </div>
+
+      <div class="font-card">
+        <div class="font-meta">
+          <h4 class="font-name">Craft</h4>
+          <div class="font-roles"><b>display</b> Bitter (wordmark only)<br><b>body</b> Public Sans<br><b>mono</b> Public Sans</div>
+        </div>
+        <div class="font-sample">
+          <div class="word" style="font-family: 'Bitter', serif;">saddle</div>
+          <div class="tag" style="font-family: 'Public Sans', sans-serif;">just another ai tool</div>
+          <div class="stat" style="font-family: 'Public Sans', sans-serif; font-variant-numeric: tabular-nums;">qna-main-service · 2m &nbsp;&nbsp; notification-engine · 14s</div>
+        </div>
+        <p class="font-note">The only one that nods at "leather and craft" typographically — a warm slab serif, but only for the wordmark itself (splash, about screen); every functional UI string stays in a plain, humanist sans. Most on-theme, and the riskiest to execute: two families in one small app can read as two apps if the split isn't held to exactly "wordmark vs. everything else," no exceptions.</p>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <b>decided</b>
+      <p><b style="color:#f1ece0;">IBM Plex Sans (bold), wordmark only</b> — "saddle" in the titlebar and on the splash, nowhere else. Everything functional (tabs, rows, statuses, buttons) stays on the system font — same structural split as Craft above, Plex standing in for Bitter. Applied throughout §06's mockups already; the rest of this page's own presentation typography (Source Serif 4 / Work Sans) is this document's voice, not the product's.</p>
+    </div>
+  </section>
+
+
+  <!-- ============ APP ICON ============ -->
+  <section id="app-icon">
+    <div class="sec-head">
+      <span class="sec-num">09 — APP ICON</span>
+      <h2>The big icon — Dock, Finder, .dmg</h2>
+      <p class="sec-dek">Different job from the 18px menubar glyph: this one has room to breathe, gets seen at 128px in the Dock and 512px in Finder, and is the very first thing anyone sees when the .dmg opens. Bold's silhouette, four treatments of the icon canvas around it.</p>
+    </div>
+
+    <div class="icongrid">
+
+      <div class="icon-big-card">
+        <div class="icon-big-stage">
+          <div class="app-icon" style="background:#1c1710;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c1583a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <h4 class="icon-big-name">Flat</h4>
+        <p class="icon-big-desc">Solid umber ground, the mark alone, no depth tricks. Quiet and confident — closest in spirit to the menubar glyph, just scaled up. Risks reading a little plain against Dock neighbors that lean on gradients.</p>
+      </div>
+
+      <div class="icon-big-card">
+        <div class="icon-big-stage">
+          <div class="app-icon" style="background: linear-gradient(135deg, #2a2116 0%, #1c1710 70%);">
+            <div style="position:absolute; inset:0; border-radius:27px; background: radial-gradient(60px 60px at 50% 38%, rgba(200,155,60,0.16), transparent 70%);"></div>
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" style="position:relative;"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c89b3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+        <h4 class="icon-big-name">Warm ✓</h4>
+        <p class="icon-big-desc">Confirmed. A soft diagonal gradient plus a faint glow behind the mark — the lighting convention most native macOS icons actually use. Brass instead of red here, since the warmer accent sits better against a lit ground.</p>
+      </div>
+
+      <div class="icon-big-card">
+        <div class="icon-big-stage">
+          <div class="app-icon" style="background:#1c1710;">
+            <div style="width:76px; height:76px; border-radius:50%; border:2.5px solid #c89b3c; display:flex; align-items:center; justify-content:center; box-shadow: inset 0 0 0 1px rgba(200,155,60,0.15);">
+              <svg width="42" height="42" viewBox="0 0 24 24" fill="none"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c1583a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+        <h4 class="icon-big-name">Stamp</h4>
+        <p class="icon-big-desc">A brass ring badge, mark inside it — the tooling-iron read from the original icon set, given room to actually work at this size (it was too busy at 18px; here it isn't). Most "crafted object," most premium-feeling of the four.</p>
+      </div>
+
+      <div class="icon-big-card">
+        <div class="icon-big-stage">
+          <div class="app-icon" style="background:#1c1710;">
+            <svg width="82" height="82" viewBox="0 0 24 24"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19V21c1.5-1.5 3-2.5 6-3.2 3.2-.7 5-2.7 4.3-6.1C22.6 8 20.5 6.2 17 6c-4.5-.3-9 3.7-11.5 8.5C4.7 15.8 4 16.8 3 16z" fill="#c1583a"/></svg>
+          </div>
+        </div>
+        <h4 class="icon-big-name">Poster</h4>
+        <p class="icon-big-desc">Solid's filled silhouette, blown up to fill most of the canvas — bold and graphic, the Raycast/Arc school of icon design. Boldest of the four at a glance, least detail if judged up close at 512px.</p>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <b>confirmed — in the dock</b>
+      <p>Warm, at actual Dock scale next to placeholder neighbors — the deciding test, and it held up. This is now the app icon: Dock, Finder, Launchpad, and the .dmg below all use it.</p>
+    </div>
+
+    <div class="state-stage" style="margin-top:16px;">
+      <div class="dock-strip">
+        <div class="dock-ghost"></div>
+        <div class="dock-ghost"></div>
+        <div class="app-icon small" style="background: linear-gradient(135deg, #2a2116 0%, #1c1710 70%);">
+          <div style="position:absolute; inset:0; border-radius:15px; background: radial-gradient(32px 32px at 50% 38%, rgba(200,155,60,0.16), transparent 70%);"></div>
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" style="position:relative;"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c89b3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="dock-sep"></div>
+        <div class="dock-ghost"></div>
+        <div class="dock-ghost"></div>
+      </div>
+    </div>
+
+    <div class="sec-head" style="margin-top:56px;">
+      <span class="sec-num">09.1</span>
+      <h3 style="font-family: var(--serif); font-size:22px; font-weight:600; margin:0 0 10px;">The .dmg, first open</h3>
+      <p class="sec-dek">What actually gets shown to the 4-5 beta friends — the installer window, once, before they've even opened the app. Warm icon, drag-to-Applications, the confirmed wordmark.</p>
+    </div>
+
+    <div class="state-stage">
+      <div class="dmg-window">
+        <div class="titlebar" style="justify-content:center;">
+          <span class="titlebar-name" style="margin:0;">saddle</span>
+        </div>
+        <div class="dmg-body">
+          <div>
+            <div class="app-icon" style="width:84px; height:84px; border-radius:19px; background: linear-gradient(135deg, #2a2116 0%, #1c1710 70%); margin:0 auto;">
+              <div style="position:absolute; inset:0; border-radius:19px; background: radial-gradient(42px 42px at 50% 38%, rgba(200,155,60,0.16), transparent 70%);"></div>
+              <svg width="46" height="46" viewBox="0 0 24 24" fill="none" style="position:relative;"><path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19" stroke="#c89b3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="dmg-label">saddle.app</div>
+          </div>
+          <svg class="dmg-arrow" width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <div class="dmg-folder">
+              <svg width="60" height="60" viewBox="0 0 24 24"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z" fill="#3a2f1e" stroke="#5c5443" stroke-width="0.5"/></svg>
+            </div>
+            <div class="dmg-label">Applications</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>saddle · theme exploration · local file, not published</footer>
+
+</div>
+</body>
+</html>

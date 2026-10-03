@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: app/src-tauri
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: app
+        run: npm run build
+
+      - name: Type-check frontend
+        working-directory: app
+        run: npm run check
+
+      - name: rustfmt
+        working-directory: app/src-tauri
+        run: cargo fmt --check
+
+      - name: clippy
+        working-directory: app/src-tauri
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Tests
+        working-directory: app/src-tauri
+        run: cargo test
+
+      - name: Hook installer tests
+        run: scripts/test-install-hooks.sh

@@ -1,0 +1,53 @@
+name: Bug report
+description: Something in Saddle isn't working as expected
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Click ...
+    validations:
+      required: true
+  - type: input
+    id: saddle-version
+    attributes:
+      label: Saddle version
+      description: Shown in the stable window's footer.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: "15.1"
+    validations:
+      required: true
+  - type: input
+    id: claude-code-version
+    attributes:
+      label: Claude Code version
+      description: Output of `claude --version`.
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Window mode
+      options:
+        - Saddle (floating pill)
+        - Stable (full window)
+        - Both / not sure
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Run Saddle from a terminal (`/Applications/Saddle.app/Contents/MacOS/saddle`) to see its log output.

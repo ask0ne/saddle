@@ -1,0 +1,161 @@
+/* saddle's one design system — every window (board, pill, any future one)
+   references these instead of redefining its own near-identical values.
+   Pieces that each look fine in isolation still read as a mess if they
+   don't share a system. Pill's glass look (translucent + blur) is the reference aesthetic;
+   board reads as the same app, opaque only because it's a real OS window,
+   not because it's a different design.
+
+   Tack — the confirmed palette from design/saddle-exploration.html. Warm
+   umber ground, saddle-stain red / brass / sage for the three real states.
+   Dark-only, deliberately: every mockup across every round of the theme
+   exploration was built and judged on a dark canvas, a light variant was
+   never designed or shown, and Tack's whole identity (leather, a workshop
+   at dusk) doesn't have an obvious light-mode reading the way a neutral
+   palette would. Replaces whelmedthinker.com's teal/red/tan, which was
+   never this app's own brand — it was borrowed before the app had an
+   identity of its own. Saddle has one now. */
+
+:root {
+  color-scheme: dark;
+  --font-sans: -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", monospace;
+
+  /* Tack, verbatim from the exploration */
+  --tack-ground: #1c1710;
+  --tack-raised: #241d15;
+  --tack-raised-2: #2e2617;
+  --tack-line: #3a2f1e;
+  --tack-line-soft: #2e2617;
+  --tack-fg: #f1ece0;
+  --tack-fg-dim: #b8ae98;
+  --tack-fg-faint: #857a63;
+  --tack-red: #c1583a;
+  --tack-brass: #c89b3c;
+  --tack-sage: #6b7a4f;
+
+  /* saddle's status accents: saddle-stain red for "needs you", brass for
+     "working", sage for "done" — see the "done" note this replaces below. */
+  --waiting: var(--tack-red);
+  --working: var(--tack-brass);
+  --done: var(--tack-sage);
+
+  --fg: var(--tack-fg);
+  --fg-dim: var(--tack-fg-dim);
+  --fg-faint: var(--tack-fg-faint);
+  --bg: var(--tack-ground);
+  --card: var(--tack-raised);
+  --card-hover: var(--tack-raised-2);
+  --border: var(--tack-line);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 15px;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+/* The one "container" treatment — the board's session list and its about
+   card, the pill's outer shell (with its own glass override for --card,
+   since it's a genuinely different window type). A hard 1px border on all
+   four sides read as boxy — a soft shadow does the same "this is a
+   distinct surface" job without the harsh vertical edges. Rows inside a
+   panel are borderless either way. */
+.dp-panel {
+  border-radius: var(--radius-md);
+  background: var(--card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* The one row style: session lists on the board and in the pill's expanded
+   view both use this, same proportions and treatment either way. Borderless
+   — it lives inside a .dp-panel (or the pill's own shell), which carries
+   the border. */
+.dp-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dp-row:hover {
+  background: var(--card-hover);
+}
+
+.dp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg-faint);
+  flex-shrink: 0;
+}
+
+.dp-dot.lit {
+  background: var(--accent, var(--fg-dim));
+}
+
+.dp-name {
+  font-weight: 600;
+  min-width: 0;
+  flex-shrink: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dp-status {
+  margin-left: auto;
+  color: var(--accent, var(--fg-dim));
+  flex-shrink: 3;
+  min-width: 0;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dp-age {
+  color: var(--fg-faint);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The one button style — used wherever a page needs a plain secondary action. */
+.dp-button {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--fg-dim);
+  font: inherit;
+  cursor: pointer;
+}
+
+.dp-button:hover {
+  background: var(--card-hover);
+  color: var(--fg);
+}

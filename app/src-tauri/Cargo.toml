@@ -1,0 +1,43 @@
+[package]
+name = "saddle"
+version = "0.1.0"
+description = "A macOS companion that shows which Claude Code session is waiting for you and jumps to its terminal tab."
+authors = ["Atharva Kawade"]
+license = "MIT"
+repository = "https://github.com/ask0ne/saddle"
+homepage = "https://github.com/ask0ne/saddle"
+edition = "2024"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "saddle_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["macos-private-api"] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+libc = "0.2"
+notify = "6"
+
+# platform::panel's two NSWindow properties Tauri doesn't expose. Already
+# transitive (via tao/wry) at these versions — pinning direct, macOS-only.
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-app-kit = { version = "0.3", features = ["NSWindow", "NSColor"] }
+# WKWebView.underPageBackgroundColor — re-asserted after every pill resize
+# (see platform::panel::keep_transparent) to work around a real wry/WebKit
+# bug: on macOS, a transparent WKWebView can start showing an opaque
+# rectangle behind its rounded content after the window is resized, because
+# a big resize can make WebKit recreate the view's backing layer, which
+# defaults to opaque again. Already transitive (via wry) at this version.
+objc2-web-kit = { version = "0.3", features = ["WKWebView"] }
+

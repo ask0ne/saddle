@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Warm treatment, confirmed in design/saddle-exploration.html §09.
+       Full square, no pre-applied corner mask — `tauri icon` applies each
+       platform's own native mask (macOS squircle, etc).
+
+       regenerate: cd app && npx tauri icon ../design/app-icon.svg -o src-tauri/icons
+       (then delete the ios/ and android/ subdirs tauri icon also generates —
+       this app is macOS-only; see ARCHITECTURE.md.) -->
+  <defs>
+    <linearGradient id="ground" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a2116"/>
+      <stop offset="70%" stop-color="#1c1710"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="38%" r="45%">
+      <stop offset="0%" stop-color="#c89b3c" stop-opacity="0.20"/>
+      <stop offset="70%" stop-color="#c89b3c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#ground)"/>
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+
+  <!-- The Bold Profile mark, same path + stroke-width as the confirmed
+       exploration render, uniformly scaled (22.75x) and centered so it
+       occupies the same ~53% proportion of the canvas it did at icon scale. -->
+  <g transform="translate(239, 205) scale(22.75)" fill="none" stroke="#c89b3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16c2-5 6-9 10-9 3 0 4.5 1.5 5 3.5.5 2-.5 3.5-2.5 4-3 .8-6-.3-8.5 1.5C5.5 17.3 4 18.5 3 19"/>
+  </g>
+</svg>

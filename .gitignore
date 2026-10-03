@@ -1,0 +1,13 @@
+# Rust / Tauri build output
+app/src-tauri/target/
+app/src-tauri/gen/
+
+# Frontend
+app/node_modules/
+app/build/
+app/.svelte-kit/
+app/dist/
+
+# Local runtime state and OS junk
+*.log
+.DS_Store

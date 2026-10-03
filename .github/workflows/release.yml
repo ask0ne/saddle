@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: app/src-tauri
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: app
+        run: npm ci
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: app
+          args: --target universal-apple-darwin
+          tagName: ${{ github.ref_name }}
+          releaseName: Saddle ${{ github.ref_name }} (beta)
+          releaseDraft: false
+          prerelease: true
+          releaseBody: |
+            Saddle is in beta. Download the `.dmg` below, open it, and drag Saddle to Applications.
+
+            **This build is unsigned.** macOS Gatekeeper will warn the first time you open it. Either right-click the app and choose Open, or run:
+
+            ```bash
+            xattr -dr com.apple.quarantine /Applications/Saddle.app
+            ```
+
+            Requires macOS 13 or later. See [CHANGELOG.md](https://github.com/ask0ne/saddle/blob/main/CHANGELOG.md) for what changed.
