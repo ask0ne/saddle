@@ -2,7 +2,9 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "pill",
   "description": "Capability for the floating pill window",
-  "windows": ["pill"],
+  "windows": [
+    "pill"
+  ],
   "permissions": [
     "core:default",
     "core:window:allow-set-size",
@@ -10,5 +12,8 @@
     "core:window:allow-set-resizable",
     "core:menu:allow-new",
     "core:menu:allow-popup"
+  ],
+  "platforms": [
+    "macOS"
   ]
 }

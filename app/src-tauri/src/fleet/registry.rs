@@ -155,7 +155,10 @@ fn parse_etime(raw: &str) -> Option<f64> {
 }
 
 /// `kill(pid, 0)` probes for existence without signalling.
+#[allow(unsafe_code)]
 pub fn is_alive(pid: i32) -> bool {
+    // SAFETY: signal 0 performs only the existence/permission check; no signal
+    // is delivered, and `pid` is a plain integer — no memory is read or written.
     let ret = unsafe { libc::kill(pid, 0) };
     ret == 0 || std::io::Error::last_os_error().raw_os_error() == Some(libc::EPERM)
 }

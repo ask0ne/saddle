@@ -38,14 +38,16 @@ Run these before opening a pull request. CI runs the same ones.
 ```bash
 # Rust, from app/src-tauri
 cargo fmt --check
-cargo clippy --all-targets -- -D warnings
-cargo test
+cargo clippy --locked --all-targets -- -D warnings
+cargo test --locked
+cargo deny check            # licences, advisories, sources (cargo install cargo-deny)
 
 # Frontend, from app
 npm run check
 
-# Hook installer, from the repository root
-scripts/test-install-hooks.sh
+# From the repository root
+scripts/test-install-hooks.sh   # hook installer
+scripts/check-version.sh        # version consistency across files
 ```
 
 ## Commits and pull requests
@@ -54,6 +56,9 @@ scripts/test-install-hooks.sh
 - Keep pull requests small and focused on one change.
 - Branch from `main` and open the pull request against `main`.
 - Describe what changed and why, and how you tested it. Add or update tests for behavior changes.
+- The minimum supported Rust version is `rust-version` in `app/src-tauri/Cargo.toml`; CI builds with exactly that.
+- The app version lives in `app/src-tauri/Cargo.toml` and `app/package.json` (kept equal by `scripts/check-version.sh`). `tauri.conf.json` intentionally has no `version`.
+- `main` is protected: changes land through a pull request, and commits must be signed.
 - Update `CHANGELOG.md` under `Unreleased` for user-visible changes.
 
 ## The `~/.devpit` path

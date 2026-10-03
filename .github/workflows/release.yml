@@ -11,17 +11,22 @@ jobs:
   release:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Tag must match the app version
+        run: scripts/check-version.sh "${{ github.ref_name }}"
+
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
         with:
           targets: aarch64-apple-darwin,x86_64-apple-darwin
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           workspaces: app/src-tauri
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
@@ -31,7 +36,7 @@ jobs:
         working-directory: app
         run: npm ci
 
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -42,12 +47,21 @@ jobs:
           releaseDraft: false
           prerelease: true
           releaseBody: |
-            Saddle is in beta. Download the `.dmg` below, open it, and drag Saddle to Applications.
+            Saddle is in beta. Download the `.dmg` below, open it, and drag Saddle to Applications. Requires macOS 13 or later; one universal build runs on Apple silicon and Intel.
 
-            **This build is unsigned.** macOS Gatekeeper will warn the first time you open it. Either right-click the app and choose Open, or run:
+            **This build is unsigned.** macOS will refuse the first launch. Open **System Settings → Privacy & Security**, scroll to the message about Saddle and click **Open Anyway**. Or run:
 
             ```bash
             xattr -dr com.apple.quarantine /Applications/Saddle.app
             ```
 
-            Requires macOS 13 or later. See [CHANGELOG.md](https://github.com/ask0ne/saddle/blob/main/CHANGELOG.md) for what changed.
+            Verify the download against `SHA256SUMS.txt` (`shasum -a 256 -c SHA256SUMS.txt`). See [CHANGELOG.md](https://github.com/ask0ne/saddle/blob/main/CHANGELOG.md) for what changed.
+
+      - name: Publish SHA256SUMS.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir dist
+          gh release download "${{ github.ref_name }}" --pattern '*.dmg' --dir dist
+          (cd dist && shasum -a 256 *.dmg > SHA256SUMS.txt && cat SHA256SUMS.txt)
+          gh release upload "${{ github.ref_name }}" dist/SHA256SUMS.txt --clobber

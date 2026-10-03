@@ -9,25 +9,34 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
         with:
           components: clippy, rustfmt
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
         with:
           workspaces: app/src-tauri
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: app/package-lock.json
+
+      - name: Version consistency
+        run: scripts/check-version.sh
 
       - name: Install frontend dependencies
         working-directory: app
@@ -41,17 +50,78 @@ jobs:
         working-directory: app
         run: npm run check
 
+      - name: npm audit (shipped dependencies)
+        working-directory: app
+        run: npm audit --omit=dev
+
       - name: rustfmt
         working-directory: app/src-tauri
         run: cargo fmt --check
 
       - name: clippy
         working-directory: app/src-tauri
-        run: cargo clippy --all-targets -- -D warnings
+        run: cargo clippy --locked --all-targets -- -D warnings
 
       - name: Tests
         working-directory: app/src-tauri
-        run: cargo test
+        run: cargo test --locked
 
       - name: Hook installer tests
         run: scripts/test-install-hooks.sh
+
+  msrv:
+    name: MSRV (rust-version)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Read rust-version
+        id: msrv
+        run: echo "version=$(sed -n 's/^rust-version = "\(.*\)"/\1/p' app/src-tauri/Cargo.toml)" >> "$GITHUB_OUTPUT"
+
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d # stable
+        with:
+          toolchain: ${{ steps.msrv.outputs.version }}
+
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          workspaces: app/src-tauri
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Build frontend (tauri embeds it at compile time)
+        working-directory: app
+        run: npm ci && npm run build
+
+      - name: cargo check on the minimum supported Rust
+        working-directory: app/src-tauri
+        run: cargo check --locked --all-targets
+
+  deny:
+    name: cargo-deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2
+        with:
+          manifest-path: app/src-tauri/Cargo.toml
+          command: check
+
+  ci-passed:
+    name: CI passed
+    if: always()
+    needs: [check, msrv, deny]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any required job failed
+        run: |
+          [ "${{ needs.check.result }}" = "success" ] && [ "${{ needs.msrv.result }}" = "success" ] && [ "${{ needs.deny.result }}" = "success" ]
